@@ -23,7 +23,7 @@ async function bootstrap() {
 
   // Swagger setup 
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('docs', app, document); // Serve at /api-docs
+  SwaggerModule.setup('docs', app, document); // Serve at /docs
 
   // listing for requests 
   await app.listen(3000, () => console.log(`Starting app at port:3000`));

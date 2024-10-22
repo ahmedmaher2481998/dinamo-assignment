@@ -35,7 +35,7 @@ export class Cart extends Document {
   @IsDate()
   lastUpdated: Date;
 }
-const CartSchema = SchemaFactory.createForClass(Cart)
+export const CartSchema = SchemaFactory.createForClass(Cart)
 
 CartSchema.pre('save', function (next) {
   // Calculate total amount

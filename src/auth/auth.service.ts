@@ -1,5 +1,5 @@
 import { ApiResponse, CreateUserDto } from '@/types';
-import { User } from '@/users/User.Schema';
+import { User } from '../users/User.Schema';
 import { ForbiddenException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';

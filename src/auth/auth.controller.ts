@@ -13,6 +13,8 @@ import { authDto, signinDto } from './dto';
 import { RtGuard } from './guards';
 import { token } from './types';
 import { ApiResponse, CreateUserDto, UserResponse } from '@/types';
+import { ApiTags } from '@nestjs/swagger';
+@ApiTags('auth')
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) { }

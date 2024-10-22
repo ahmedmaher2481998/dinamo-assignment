@@ -9,5 +9,6 @@ import { User, UserSchema } from '@/users/User.Schema';
   imports: [JwtModule.register({}), MongooseModule.forFeature([{ name: User.name, schema: UserSchema }])],
   controllers: [AuthController],
   providers: [AuthService, AtJTW, RtJTW],
+  exports: [MongooseModule]
 })
 export class AuthModule { }

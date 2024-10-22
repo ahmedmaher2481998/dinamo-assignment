@@ -14,7 +14,7 @@ import { Document, HydratedDocument, Schema as MongooseSchema } from 'mongoose';
 import { Vendor } from '@/vendors/Vendor.Schema';
 export type ProductDocument = HydratedDocument<Product>;
 
-// Product Schema
+//  Schema
 @Schema({ timestamps: true })
 export class Product extends Document {
   @Prop({ required: true })

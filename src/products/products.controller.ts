@@ -2,9 +2,9 @@ import { Body, Controller, Delete, Get, Param, Patch, Post, Put, Query, UseGuard
 import { ProductService } from './products.service';
 import { ApiResponse, CreateProductDto, PaginatedResponse, ProductQuery, ProductResponse, UpdateProductDto } from '@/types';
 import { VendorGuard } from '@/auth/guards/Vendor.guard';
+import { ApiTags } from '@nestjs/swagger';
 
-
-// product.controller.ts
+@ApiTags('products')
 @Controller('products')
 export class ProductController {
   constructor(private readonly productService: ProductService) { }
