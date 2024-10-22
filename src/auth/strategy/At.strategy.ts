@@ -11,7 +11,7 @@ export class AtJTW extends PassportStrategy(Strategy, 'jwt') {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
-      secretOrKey: process.env.JWT_SECRET // 'at-secret',
+      secretOrKey: process.env.JWT_SECRET_AT // 'at-secret',
     });
   }
   validate(payload: payload) {

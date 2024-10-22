@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Get,
   HttpCode,
   HttpStatus,
   Post,
@@ -8,26 +9,34 @@ import {
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { getCurrentUser, getCurrentUserId, isPublic } from './decorators';
-import { authDto } from './dto';
+import { authDto, signinDto } from './dto';
 import { RtGuard } from './guards';
 import { token } from './types';
+import { ApiResponse, CreateUserDto, UserResponse } from '@/types';
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) { }
 
-  @isPublic()
+
   // local(signUp)
-  @Post('/auth/sign-up')
+  @isPublic()
+  @Post('/sign-up')
   @HttpCode(HttpStatus.CREATED)
-  signUp(@Body() dto: authDto): Promise<token> {
-    return this.authService.signUp(dto);
+  async signUp(@Body() dto: authDto): Promise<token & ApiResponse<any>> {
+    const { access_token, refresh_token, user } = await this.authService.signUp(dto);
+    return {
+      access_token, data: user,
+      refresh_token,
+      success: true,
+      message: 'user created successfully'
+    }
   }
 
   @isPublic()
   // local(signIn)
-  @Post('/auth/sign-in')
+  @Post('/sign-in')
   @HttpCode(HttpStatus.ACCEPTED)
-  signIn(@Body() dto: authDto): Promise<token> {
+  signIn(@Body() dto: signinDto): Promise<token> {
     return this.authService.signIn(dto);
   }
   // local/logout

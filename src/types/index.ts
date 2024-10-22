@@ -11,6 +11,11 @@ export * from './User.types'
 
 
 
+export enum UserRole {
+  ADMIN = 'admin',
+  USER = 'user',
+}
+
 // Response Types for API
 export interface ApiResponse<T> {
   success: boolean;

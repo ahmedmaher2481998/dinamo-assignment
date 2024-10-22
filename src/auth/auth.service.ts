@@ -1,5 +1,5 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
-import { authDto } from './dto';
+import { authDto, signinDto } from './dto';
 import * as bcrypt from 'bcrypt';
 import { token } from './types';
 import { JwtService } from '@nestjs/jwt';
@@ -7,40 +7,47 @@ import { UsersService } from '@/users/users.service';
 import { User, UserDocument } from '@/users/User.Schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { ApiResponse, CreateUserDto } from '@/types';
 @Injectable()
 export class AuthService {
   constructor(
     @InjectModel(User.name) private userModel: Model<User>
     , private jwtService: JwtService) { }
-  async signUp(dto: authDto): Promise<token> {
-    // TODO replace with mongo 
-    const newUser = await this.userModel.create({
+  async signUp(dto: authDto): Promise<token & { user: any }> {
+    const userData: CreateUserDto = {
       email: dto.email,
-      hash: dto.password
-    });
+      firstName: dto.firstName,
+      lastName: dto.lastName,
+      password: dto.password, // pre-save hash this ,
+      role: dto.role
+    }
+    const newUser = await this.userModel.create(userData);
 
-    const tokens = await this.getTokens(newUser.id, newUser.email);
-    await this.updateRtHash(newUser.id, tokens.refresh_token);
-    return tokens;
+    const { access_token, refresh_token } = await this.getTokens(newUser.id, newUser.email);
+    await this.updateRtHash(newUser.id, refresh_token);
+    return { access_token, refresh_token, user: newUser };
   }
-  async signIn(dto: authDto): Promise<token> {
-    // TODO replace with mongo 
+  async signIn(dto: signinDto): Promise<token & ApiResponse<User>> {
     const user = await this.userModel.findOne({
       email: dto.email,
     });
+    console.log("🚀 ~ AuthService ~ signIn ~ user:", user)
     if (!user) throw new ForbiddenException('Access Denied');
-    const isPassMatch = bcrypt.compareSync(dto.password, this.hashData(user.password));
+    const isPassMatch = bcrypt.compareSync(dto.password, user.password)
+
     if (!isPassMatch) throw new ForbiddenException('Access Denied');
-    const tokens = await this.getTokens((await user).id, (await user).email);
-    await this.updateRtHash(user.id, tokens.refresh_token);
-    return tokens;
+    const { access_token, refresh_token } = await this.getTokens(user.id, user.email);
+    await this.updateRtHash(user.id, refresh_token);
+    return {
+      access_token, refresh_token,
+      data: user,
+      success: true, message: "signin success"
+    }
   }
   async logOut(id: number) {
-    // TODO replace with mongo 
     await this.userModel.findByIdAndUpdate(id, { hashedRT: null, });
   }
   async refresh(id: number, refreshToken: string) {
-    // TODO replace with mongo 
     const user = await this.userModel.findById(id);
     const isRtMatch = bcrypt.compareSync(refreshToken, this.hashData(user.hashedRT));
     if (!isRtMatch) throw new ForbiddenException('Access Denied');
@@ -78,8 +85,7 @@ export class AuthService {
     };
   }
   async updateRtHash(id: number, token: string) {
-    // TODO replace with mongo 
-    await this.userModel.findByIdAndUpdate(id, {
+    return await this.userModel.findByIdAndUpdate(id, {
       hashedRT: this.hashData(token)
     })
   }

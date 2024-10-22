@@ -1,5 +1,6 @@
 
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import * as bcrypt from 'bcrypt'
 import {
   IsBoolean,
   IsDate,
@@ -63,11 +64,15 @@ export class User {
 
 
 export const UserSchema = SchemaFactory.createForClass(User);
-UserSchema.pre('save', function (next) {
-  if (this.isModified('password')) {
-    // Add password hashing logic here
+UserSchema.pre('save', async function (next) {
+  try {
+    if (this.password && this.isModified('password')) {
+      this.password = await bcrypt.hash(this.password, 14);
+    }
+    next();
+  } catch (err) {
+    next(err);
   }
-  next();
 });
 
 UserSchema.index({ email: 1 });
