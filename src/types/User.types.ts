@@ -1,3 +1,4 @@
+import { UserRole } from ".";
 import { TimestampFieldsType } from "./Timestamp.types";
 
 export type UserType = {
@@ -7,7 +8,7 @@ export type UserType = {
   email: string;
   password: string;
   isVerified: boolean;
-  role: 'user' | 'admin';
+  role: UserRole;
   lastLogin: Date;
 } & TimestampFieldsType
 

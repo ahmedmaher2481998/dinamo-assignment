@@ -14,6 +14,7 @@ export * from './User.types'
 export enum UserRole {
   ADMIN = 'admin',
   USER = 'user',
+  VENDOR = 'vendor'
 }
 
 // Response Types for API

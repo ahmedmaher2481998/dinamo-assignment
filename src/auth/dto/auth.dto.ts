@@ -17,7 +17,7 @@ export class authDto implements CreateUserDto {
 
   @IsNotEmpty()
   @IsEnum(UserRole, { message: 'Role must be one of: admin, user' })
-  role: 'user' | 'admin';
+  role: UserRole;
 
   @IsNotEmpty()
   @IsString()

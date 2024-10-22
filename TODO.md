@@ -1,7 +1,7 @@
 - [ ] USER:
-  - [ ] POST /api/auth/register - Register new user
-  - [ ] POST /api/auth/login - User login
-  - [ ] GET /api/users/profile - Get current user profile
+  - [x] POST /api/auth/sign-up - Register new user
+  - [x] POST /api/auth/sign-in - User login
+  - [x ] GET /api/users/profile - Get current user profile
 - [ ] Product:
   - [ ] POST /api/products - Create product (vendor only)
   - [ ] GET /api/products - Get all products
@@ -16,3 +16,4 @@
   - [ ]POST /api/cart/items - Add item to cart
   - [ ]GET /api/cart - Get user's cart
   - [ ]DELETE /api/cart/items/:id - Remove item from cart
+- [ ] Swagger Documentation & a Good Readme File .

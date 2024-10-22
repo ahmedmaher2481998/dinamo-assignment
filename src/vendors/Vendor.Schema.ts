@@ -1,4 +1,4 @@
-
+import * as bcrypt from 'bcrypt'
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import {
   IsArray,
@@ -54,4 +54,14 @@ export class Vendor extends Document {
   products: Product[];
 }
 export const VendorSchema = SchemaFactory.createForClass(Vendor);
+VendorSchema.pre('save', async function (next) {
+  try {
+    if (this.password && this.isModified('password')) {
+      this.password = await bcrypt.hash(this.password, 14);
+    }
+    next();
+  } catch (err) {
+    next(err);
+  }
+});
 VendorSchema.index({ companyName: 1, businessEmail: 1 });

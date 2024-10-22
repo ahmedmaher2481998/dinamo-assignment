@@ -46,7 +46,7 @@ export class User {
   isVerified: boolean;
 
   @Prop({ enum: ['user', 'admin'], default: 'user' })
-  @IsEnum(['user', 'admin'])
+  @IsEnum(['user', 'admin', 'vendor'])
   role: string;
 
   @Prop({
