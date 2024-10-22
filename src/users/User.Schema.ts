@@ -48,7 +48,11 @@ export class User {
   @IsEnum(['user', 'admin'])
   role: string;
 
-
+  @Prop({
+    name: "refresh_token",
+    type: String
+  })
+  hashedRT
 
   @Prop({ default: Date.now })
   @IsDate()

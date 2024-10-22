@@ -13,19 +13,19 @@ import { RtGuard } from './guards';
 import { token } from './types';
 @Controller('auth')
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService) { }
 
   @isPublic()
-  // local/signUp
-  @Post('/local/sign-up')
+  // local(signUp)
+  @Post('/auth/sign-up')
   @HttpCode(HttpStatus.CREATED)
   signUp(@Body() dto: authDto): Promise<token> {
     return this.authService.signUp(dto);
   }
 
   @isPublic()
-  // local/signIn
-  @Post('/local/sign-in')
+  // local(signIn)
+  @Post('/auth/sign-in')
   @HttpCode(HttpStatus.ACCEPTED)
   signIn(@Body() dto: authDto): Promise<token> {
     return this.authService.signIn(dto);
@@ -36,7 +36,7 @@ export class AuthController {
   logout(@getCurrentUserId() id: number) {
     this.authService.logOut(id);
   }
-  // local/refresh
+  // local(refresh)
   @isPublic()
   @UseGuards(RtGuard)
   @Post('/refresh')
