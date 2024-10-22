@@ -1,0 +1,18 @@
+- [ ] USER:
+  - [ ] POST /api/auth/register - Register new user
+  - [ ] POST /api/auth/login - User login
+  - [ ] GET /api/users/profile - Get current user profile
+- [ ] Product:
+  - [ ] POST /api/products - Create product (vendor only)
+  - [ ] GET /api/products - Get all products
+  - [ ] GET /api/products/:id - Get specific product
+  - [ ] PUT /api/products/:id - Update product (vendor only)
+  - [ ] DELETE /api/products/:id - Delete product (vendor only)
+- [ ] Vendor:
+  - [ ]POST /api/vendors - Register vendor
+  - [ ]GET /api/vendors - Get all vendors
+  - [ ]GET /api/vendors/:id - Get specific vendor
+- [ ]Cart :
+  - [ ]POST /api/cart/items - Add item to cart
+  - [ ]GET /api/cart - Get user's cart
+  - [ ]DELETE /api/cart/items/:id - Remove item from cart

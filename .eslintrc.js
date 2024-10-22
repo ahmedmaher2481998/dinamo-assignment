@@ -1,4 +1,6 @@
-module.exports = {
+import eslintConfigPrettier from "eslint-config-prettier";
+
+module.exports = [{
   parser: '@typescript-eslint/parser',
   parserOptions: {
     project: 'tsconfig.json',
@@ -9,6 +11,7 @@ module.exports = {
   extends: [
     'plugin:@typescript-eslint/recommended',
     'plugin:prettier/recommended',
+    "prettier"
   ],
   root: true,
   env: {
@@ -22,4 +25,4 @@ module.exports = {
     '@typescript-eslint/explicit-module-boundary-types': 'off',
     '@typescript-eslint/no-explicit-any': 'off',
   },
-};
+}], eslintConfigPrettier;
