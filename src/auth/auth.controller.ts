@@ -1,19 +1,18 @@
+import { ApiResponse } from '@/types';
 import {
   Body,
   Controller,
-  Get,
   HttpCode,
   HttpStatus,
   Post,
-  UseGuards,
+  UseGuards
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { getCurrentUser, getCurrentUserId, isPublic } from './decorators';
 import { authDto, signinDto } from './dto';
 import { RtGuard } from './guards';
 import { token } from './types';
-import { ApiResponse, CreateUserDto, UserResponse } from '@/types';
-import { ApiTags } from '@nestjs/swagger';
 @ApiTags('auth')
 @Controller('auth')
 export class AuthController {

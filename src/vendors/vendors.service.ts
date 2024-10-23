@@ -1,6 +1,7 @@
-import { Injectable, NotFoundException, ConflictException, BadRequestException } from '@nestjs/common';
+import { Injectable, NotFoundException, ConflictException, BadRequestException, ForbiddenException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import * as bcrypt from 'bcrypt';
 import { Vendor } from './Vendor.Schema';
 import { BaseCrudService } from '@/shared/BaseCrud.abstract';
 import { hash } from 'bcrypt';
@@ -13,17 +14,20 @@ import {
   PaginatedResponse,
   PaginationQuery
 } from '@/types';
+import { token } from '@/auth/types';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class VendorService extends BaseCrudService<Vendor> {
   constructor(
-    @InjectModel(Vendor.name) private vendorModel: Model<Vendor>
+    @InjectModel(Vendor.name) private vendorModel: Model<Vendor>,
+    private jwtService: JwtService
   ) {
     super(vendorModel);
   }
 
-  private async hashPassword(password: string): Promise<string> {
-    return hash(password, 10);
+  private async hashData(data: string): Promise<string> {
+    return hash(data, 14);
   }
 
   private formatVendorResponse(vendor: VendorType): VendorResponse {
@@ -31,7 +35,28 @@ export class VendorService extends BaseCrudService<Vendor> {
     return vendorResponse;
   }
 
-  async registerVendor(createDto: CreateVendorDto): Promise<ApiResponse<VendorResponse>> {
+  async loginVendor(email: string, password: string): Promise<token & ApiResponse<VendorResponse>> {
+    const vendor = await this.vendorModel.findOne({
+      businessEmail: email,
+    }, { password: 1, businessEmail: 1 });
+    if (!vendor) throw new ForbiddenException('Access Denied');
+    const isPassMatch = bcrypt.compareSync(password, vendor.password)
+
+    if (!isPassMatch) throw new ForbiddenException('Access Denied');
+    const { access_token, refresh_token } = await this.getTokens(vendor.id, vendor.businessEmail);
+    await this.updateRtHash(vendor.id, refresh_token);
+    const vendorData: Vendor = await this.vendorModel.findOne({
+      businessEmail: email,
+    }, { password: 0, hashedRT: 0 });
+    return {
+      access_token, refresh_token,
+      data: this.formatVendorResponse(vendorData.toObject()),
+      success: true, message: "sign in success"
+    }
+  }
+
+
+  async registerVendor(createDto: CreateVendorDto): Promise<ApiResponse<VendorResponse> & token> {
     try {
       // Check if vendor already exists
       const existingVendor = await this.vendorModel.findOne({
@@ -42,28 +67,29 @@ export class VendorService extends BaseCrudService<Vendor> {
         throw new ConflictException('Vendor with this email already exists');
       }
 
-      // Hash password
-      const hashedPassword = await this.hashPassword(createDto.password);
-
       // Create vendor
       const vendor = await super.create({
         ...createDto,
-        password: hashedPassword,
+        password: createDto.password, // pre-saved hash (Hook)
         isVerified: false,
         rating: 0,
         products: []
       });
+      const { access_token, refresh_token } = await this.getTokens(vendor.id, vendor.businessEmail)
 
+      await this.updateRtHash(vendor.id, refresh_token)
       return {
         success: true,
         message: 'Vendor registered successfully',
-        data: this.formatVendorResponse(vendor.toObject())
+        data: this.formatVendorResponse(vendor.toObject()),
+        refresh_token,
+        access_token
       };
     } catch (error) {
       if (error instanceof ConflictException) {
         throw error;
       }
-      throw new BadRequestException('Failed to register vendor');
+      throw new BadRequestException('Failed to register vendor' + error.message);
     }
   }
 
@@ -114,6 +140,40 @@ export class VendorService extends BaseCrudService<Vendor> {
     } catch (error) {
       throw new BadRequestException('Failed to fetch vendors');
     }
+  }
+  async getTokens(id: string, email: string): Promise<token> {
+    const [at, rt] = await Promise.all([
+      this.jwtService.signAsync(
+        {
+          sub: id,
+          email,
+        },
+        {
+          expiresIn: 15 * 60,
+          secret: process.env.JWT_SECRET_AT,
+        },
+      ),
+      this.jwtService.signAsync(
+        {
+          sub: id,
+          email,
+        },
+        {
+          expiresIn: 60 * 60 * 24 * 7,
+          secret: process.env.JWT_SECRET_RT,
+        },
+      ),
+    ]);
+    return {
+      access_token: at,
+      refresh_token: rt,
+    };
+  }
+  async updateRtHash(id: string, token: string) {
+    const hashedToken = await this.hashData(token)
+    return await this.vendorModel.findByIdAndUpdate(id, {
+      hashRT: hashedToken
+    })
   }
 
   async updateVendorProfile(
@@ -173,4 +233,7 @@ export class VendorService extends BaseCrudService<Vendor> {
       throw new BadRequestException('Failed to fetch vendor stats');
     }
   }
+
+
+
 }

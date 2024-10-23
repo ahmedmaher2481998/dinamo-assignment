@@ -1,28 +1,28 @@
 
+import { isPublic } from '@/auth/decorators';
+import { VendorGuard } from '@/auth/guards/Vendor.guard';
+import { CreateVendorDto, PaginationQuery, UpdateVendorDto } from '@/types';
 import {
+  BadRequestException,
+  Body,
   Controller,
   Get,
+  Param,
   Post,
   Put,
-  Body,
-  Param,
   Query,
-  UseGuards,
   Request,
-  BadRequestException
+  UseGuards
 } from '@nestjs/common';
-import { VendorService } from './vendors.service';
-import { CreateVendorDto, PaginationQuery, UpdateVendorDto } from '@/types';
-import { VendorGuard } from '@/auth/guards/Vendor.guard';
 import { ApiTags } from '@nestjs/swagger';
-import { isPublic } from '@/auth/decorators';
-import { Vendor } from './Vendor.Schema';
+import { VendorService } from './vendors.service';
+import { authDto, signinDto } from '@/auth/dto';
 @ApiTags('vendors')
 @Controller('vendors')
 export class VendorController {
   constructor(private readonly vendorService: VendorService) { }
 
-  // @isPublic()
+  @isPublic()
   @Post('register')
   register(@Body() createVendorDto: CreateVendorDto) {
     return this.vendorService.registerVendor(createVendorDto);
@@ -47,12 +47,20 @@ export class VendorController {
     @Body() updateVendorDto: UpdateVendorDto,
     @Request() req
   ) {
-    // Ensure vendor can only update their own profile
-    if (req.user.vendorId !== id) {
+    // vendor can only update their profile
+    if (req.user['sub'] !== id) {
       throw new BadRequestException('You can only update your own profile');
     }
     return this.vendorService.updateVendorProfile(id, updateVendorDto);
   }
+
+  @isPublic()
+  @Post('sign-in')
+  loginUser(@Body() authBody: signinDto) {
+    return this.vendorService.loginVendor(authBody.email, authBody.password);
+  }
+
+
 
   @UseGuards(VendorGuard)
   @Get(':id/stats')

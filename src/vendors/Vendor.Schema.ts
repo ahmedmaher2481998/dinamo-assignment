@@ -35,6 +35,9 @@ export class Vendor extends Document {
   @IsString()
   address: string;
 
+  @Prop({ default: null })
+  hashRT: string
+
   @Prop({ default: false })
   @IsBoolean()
   isVerified: boolean;
