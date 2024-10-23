@@ -5,7 +5,7 @@ services:
     image: mongo
     container_name: dinamo-mongodb
     ports:
-      - '5002:27017'
+      - '27017:27017'
     environment:
       MONGO_INITDB_ROOT_USERNAME: admin
       MONGO_INITDB_ROOT_PASSWORD: secretPassword

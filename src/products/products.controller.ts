@@ -1,8 +1,9 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Put, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Put, Query, Req, UseGuards } from '@nestjs/common';
 import { ProductService } from './products.service';
 import { ApiResponse, CreateProductDto, PaginatedResponse, ProductQuery, ProductResponse, UpdateProductDto } from '@/types';
 import { VendorGuard } from '@/auth/guards/Vendor.guard';
 import { ApiTags } from '@nestjs/swagger';
+import { isPublic } from '@/auth/decorators';
 
 @ApiTags('products')
 @Controller('products')
@@ -11,16 +12,19 @@ export class ProductController {
 
   @Post()
   @UseGuards(VendorGuard)
-  create(@Body() createDto: CreateProductDto): Promise<ApiResponse<ProductResponse>> {
-    return this.productService.create(createDto);
+  create(@Req() req, @Body() createDto: Omit<CreateProductDto, 'vendorId'>): Promise<ApiResponse<ProductResponse>> {
+    const vendorId = req.user['sub'] as string
+    return this.productService.create({ vendorId, ...createDto });
   }
 
   @Get()
+  @isPublic()
   findAll(@Query() query: ProductQuery): Promise<ApiResponse<PaginatedResponse<ProductResponse>>> {
     return this.productService.findAll(query);
   }
 
   @Get(':id')
+  @isPublic()
   findOne(@Param('id') id: string): Promise<ApiResponse<ProductResponse>> {
     return this.productService.findById(id);
   }

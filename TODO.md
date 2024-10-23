@@ -2,12 +2,12 @@
   - [x] POST /api/auth/sign-up - Register new user
   - [x] POST /api/auth/sign-in - User login
   - [x ] GET /api/users/profile - Get current user profile
-- [ ] Product:
-  - [ ] POST /api/products - Create product (vendor only)
-  - [ ] GET /api/products - Get all products
-  - [ ] GET /api/products/:id - Get specific product
-  - [ ] PUT /api/products/:id - Update product (vendor only)
-  - [ ] DELETE /api/products/:id - Delete product (vendor only)
+- [x] Product:
+  - [x] POST /api/products - Create product (vendor only)
+  - [x] GET /api/products - Get all products
+  - [x] GET /api/products/:id - Get specific product
+  - [x] PUT /api/products/:id - Update product (vendor only)
+  - [x] DELETE /api/products/:id - Delete product (vendor only)
 - [x] Vendor:
 
   - [X]POST /api/vendors - Register vendor

@@ -159,7 +159,7 @@ export class VendorService extends BaseCrudService<Vendor> {
           email,
         },
         {
-          expiresIn: 60 * 60 * 24 * 7,
+          expiresIn: '7d',
           secret: process.env.JWT_SECRET_RT,
         },
       ),
