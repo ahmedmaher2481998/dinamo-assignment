@@ -8,10 +8,14 @@
   - [ ] GET /api/products/:id - Get specific product
   - [ ] PUT /api/products/:id - Update product (vendor only)
   - [ ] DELETE /api/products/:id - Delete product (vendor only)
-- [ ] Vendor:
-  - [ ]POST /api/vendors - Register vendor
-  - [ ]GET /api/vendors - Get all vendors
-  - [ ]GET /api/vendors/:id - Get specific vendor
+- [x] Vendor:
+
+  - [X]POST /api/vendors - Register vendor
+  - [X]GET /api/vendors - Get all vendors
+  - [X]GET /api/vendors/:id - Get specific vendor
+  - [X]GET /api/vendors/:id/stats - Get specific vendor stats
+  - [X]Post /api/vendors/:id/verify - Verify Vendor
+
 - [ ]Cart :
   - [ ]POST /api/cart/items - Add item to cart
   - [ ]GET /api/cart - Get user's cart

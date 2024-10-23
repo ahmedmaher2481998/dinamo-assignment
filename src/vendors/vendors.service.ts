@@ -234,6 +234,8 @@ export class VendorService extends BaseCrudService<Vendor> {
     }
   }
 
-
+  async logOut(id: string) {
+    await this.vendorModel.findByIdAndUpdate(id, { hashedRT: null, });
+  }
 
 }

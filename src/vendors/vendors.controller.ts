@@ -40,6 +40,13 @@ export class VendorController {
     return this.vendorService.getVendorProfile(id);
   }
 
+  @Post('logout')
+  @UseGuards(VendorGuard)
+  logOut(@Request() req) {
+    return this.vendorService.logOut(req.user['sub']);
+  }
+
+
   @UseGuards(VendorGuard)
   @Put(':id')
   updateProfile(

@@ -13,7 +13,6 @@ export class VendorGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
-    console.log("🚀 ~ VendorGuard ~ canActivate ~ request.user:", request.user.sub)
     const userId = request.user['sub']
     const vendor = await this.vendorModel.findById(userId)
     if (!vendor) return false;
