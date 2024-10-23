@@ -16,8 +16,8 @@
   - [X]GET /api/vendors/:id/stats - Get specific vendor stats
   - [X]Post /api/vendors/:id/verify - Verify Vendor
 
-- [ ]Cart :
-  - [ ]POST /api/cart/items - Add item to cart
-  - [ ]GET /api/cart - Get user's cart
-  - [ ]DELETE /api/cart/items/:id - Remove item from cart
-- [ ] Swagger Documentation & a Good Readme File .
+- [X]Cart :
+  - [X]POST /api/cart/items - Add item to cart
+  - [X]GET /api/cart - Get user's cart
+  - [X]DELETE /api/cart/items/:id - Remove item from cart
+- [x] Swagger Documentation & a Good Readme File with no schema .
