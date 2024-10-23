@@ -81,6 +81,7 @@ export class VendorService extends BaseCrudService<Vendor> {
   }
 
   async getAllVendors(query: PaginationQuery): Promise<ApiResponse<PaginatedResponse<VendorResponse>>> {
+
     const { page = 1, limit = 10, sort = 'rating', order = 'desc' } = query;
     const skip = (page - 1) * limit;
 

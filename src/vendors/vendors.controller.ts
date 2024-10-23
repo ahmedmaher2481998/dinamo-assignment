@@ -15,22 +15,27 @@ import { VendorService } from './vendors.service';
 import { CreateVendorDto, PaginationQuery, UpdateVendorDto } from '@/types';
 import { VendorGuard } from '@/auth/guards/Vendor.guard';
 import { ApiTags } from '@nestjs/swagger';
+import { isPublic } from '@/auth/decorators';
+import { Vendor } from './Vendor.Schema';
 @ApiTags('vendors')
 @Controller('vendors')
 export class VendorController {
   constructor(private readonly vendorService: VendorService) { }
 
+  // @isPublic()
   @Post('register')
   register(@Body() createVendorDto: CreateVendorDto) {
     return this.vendorService.registerVendor(createVendorDto);
   }
 
   @Get()
+  @isPublic()
   getAllVendors(@Query() query: PaginationQuery) {
     return this.vendorService.getAllVendors(query);
   }
 
   @Get(':id')
+  @isPublic()
   getVendorProfile(@Param('id') id: string) {
     return this.vendorService.getVendorProfile(id);
   }
